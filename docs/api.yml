@@ -114,6 +114,15 @@ paths:
           schema:
             type: string
             format: uuid
+      responses:
+        204:
+          description: The list of created or updated authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
 
 components:
   schemas:
