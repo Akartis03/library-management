@@ -46,7 +46,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Book'
+                  $ref: "#/components/schemas/Book"
     put:
       tags:
         - Books
@@ -58,7 +58,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Book'
+                $ref: "#/components/schemas/Book"
       responses:
         200:
           description: The list of created or updated books
@@ -67,7 +67,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Book'
+                  $ref: "#/components/schemas/Book"
   /authors:
     get:
       summary: Get all authors
@@ -91,7 +91,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Author'
+                  $ref: "#/components/schemas/Author"
     put:
       summary: Create or update authors
       operationId: crupdateAuthors
@@ -103,7 +103,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Author'
+                $ref: "#/components/schemas/Author"
       responses:
         200:
           description: The list of created or updated authors
@@ -112,7 +112,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Author'
+                  $ref: "#/components/schemas/Author"
   /authors/{aId}:
     delete:
       summary: Delete an author
@@ -132,7 +132,30 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Author'
+                $ref: "#/components/schemas/Author"
+
+  /books/{booId}/authors/{authorId}:
+    put:
+      summary: Modify the author of book
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+          description: The book id to be modified
+        - name: authorId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int64
+          description: The id for the new book
+      responses:
+        200:
+          description: Opération successfully
+
 components:
   schemas:
     Book:
@@ -143,7 +166,7 @@ components:
         bookName:
           type: string
         author:
-          $ref: '#/components/schemas/Author'
+          $ref: "#/components/schemas/Author"
         pageNumbers:
           type: integer
         topic:
@@ -157,11 +180,14 @@ components:
           format: date
     CrupdateBooks:
       allOf:
-        - $ref: '#/components/schemas/Book' 
+        - $ref: "#/components/schemas/Book"
         - type: object
-          properties:
-            id: 
-              type: string
+        - required:
+            - id
+            - bookName
+            - pageNumbers
+            - topic
+            - releaseDate
     Author:
       type: object
       properties:
@@ -170,10 +196,9 @@ components:
         authorName:
           type: string
         sex:
-          $ref: '#/components/schemas/Sex'
+          $ref: "#/components/schemas/Sex"
     Sex:
       type: string
       enum:
         - M
         - F
-    
