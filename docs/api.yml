@@ -1,13 +1,15 @@
 openapi: 3.0.3
 info:
   title: Library API
-  version: 1.0.1
-  description: STD22001
+  version: 1.1.0
+  description: STD22077
 servers:
   - url: https://library.com
 paths:
   /books:
     get:
+      tags:
+        - Books
       summary: Get all books
       description: The returned books are ordered by updated datetime.
       operationId: getBooks
@@ -18,22 +20,24 @@ paths:
           required: false
           schema:
             type: string
-        #TODO3: add parameter to filter books by intervals of dates of the releaseDate
         - in: query
-          name: releaseDateFrom
-          description: Filter return books by a minimum release date
-          required: false
+          name: releaseDateMin
+          description: |
+            If  `releaseDateMax` is not provided, `releaseDateMin` is ignored.
+            `releaseDateMin` can not be after `releaseDateMax`.
           schema:
             type: string
             format: date
-        - in: query
-          name: releaseDateTo
-          description: Filter return books by a maximum release date
           required: false
+        - in: query
+          name: releaseDateMax
+          description: |
+            If  `releaseDateMin` is not provided, `releaseDateMax` is ignored.
+            `releaseDateMax` can not be after `releaseDateMin`.
           schema:
             type: string
             format: date
-
+          required: false
       responses:
         200:
           description: The list of filtered books
@@ -42,8 +46,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Book"
+                  $ref: '#/components/schemas/Book'
     put:
+      tags:
+        - Books
       summary: Create or update a list of books
       operationId: crupdateBooks
       requestBody:
@@ -52,7 +58,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: "#/components/schemas/Book"
+                $ref: '#/components/schemas/Book'
       responses:
         200:
           description: The list of created or updated books
@@ -61,39 +67,43 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Book"
+                  $ref: '#/components/schemas/Book'
   /authors:
-    #TODO2: complete GET (can be filtered by name) - PUT - DELETE
     get:
       summary: Get all authors
-      description: Get a list of authors. You can filter by name.
       operationId: getAuthors
+      tags:
+        - Authors
       parameters:
-        - in: query
-          name: authorName
-          description: Filter authors by name
-          required: false
+        - name: authorName
+          in: query
+          description: |
+            Filter returned authors by given name. 
+            If not provided, then list is not filtered.
           schema:
             type: string
+          required: false
       responses:
         200:
-          description: The list of authors
+          description: The list of filtered authors
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Author"
+                  $ref: '#/components/schemas/Author'
     put:
-      summary: Create or update a list of authors
+      summary: Create or update authors
       operationId: crupdateAuthors
+      tags:
+        - Authors
       requestBody:
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: "#/components/schemas/Author"
+                $ref: '#/components/schemas/Author'
       responses:
         200:
           description: The list of created or updated authors
@@ -102,28 +112,27 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Author"
+                  $ref: '#/components/schemas/Author'
+  /authors/{aId}:
     delete:
-      summary: Delete an author by ID
+      summary: Delete an author
       operationId: deleteAuthor
+      tags:
+        - Authors
       parameters:
-        - in: path
-          name: authorId
-          description: ID of the author to delete
-          required: true
+        - name: aId
+          in: path
+          description: Author identifier to be deleted
           schema:
             type: string
-            format: uuid
+          required: true
       responses:
-        204:
-          description: The list of created or updated authors
+        200:
+          description: The author deleted
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Author"
-
+                $ref: '#/components/schemas/Author'
 components:
   schemas:
     Book:
@@ -134,9 +143,7 @@ components:
         bookName:
           type: string
         author:
-          #TODO1: set it as a component with properties : id, name, sex (M or F)
-          $ref: "#/components/schemas/Author"
-          type: string
+          $ref: '#/components/schemas/Author'
         pageNumbers:
           type: integer
         topic:
@@ -148,33 +155,25 @@ components:
         releaseDate:
           type: string
           format: date
+    CrupdateBooks:
+      allOf:
+        - $ref: '#/components/schemas/Book' 
+        - type: object
+          properties:
+            id: 
+              type: string
     Author:
       type: object
       properties:
         id:
           type: string
-        name:
+        authorName:
           type: string
         sex:
-          type: string
-          enum:
-            - M
-            - F
-    CrupdateBooks:
-      type: object
-      properties:
-        id:
-          type: string
-        bookName:
-          type: string
-        pageNumbers: 
-          type: integer
-        topic: 
-          type: string
-          enum:
-            - ROMANCE
-            - COMEDY
-            - OTHER
-        releaseDate:
-          type: string
-          format: date
+          $ref: '#/components/schemas/Sex'
+    Sex:
+      type: string
+      enum:
+        - M
+        - F
+    
