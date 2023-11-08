@@ -41,18 +41,12 @@ paths:
             type: string
             format: date
           required: false
-        - in: query
-          name: page
-          description: page number
-          required: false
-          schema:
-            type: integer
-            default: 1
+        - $ref: "#/components/parameters/queryPagination"
         - in: query
           name: pageSize
           description: number of page in the book
           required: false
-          schema: 
+          schema:
             type: integer
             default: 50
       responses:
@@ -63,7 +57,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Book'
+                  $ref: "#/components/schemas/Book"
     put:
       tags:
         - Books
@@ -75,7 +69,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Book'
+                $ref: "#/components/schemas/Book"
       responses:
         200:
           description: The list of created or updated books
@@ -84,7 +78,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Book'
+                  $ref: "#/components/schemas/Book"
   /books/{booId}/authors/{authorId}:
     put:
       tags:
@@ -111,7 +105,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CrupdateBooks'
+                  $ref: "#/components/schemas/CrupdateBooks"
   /books/authors:
     put:
       tags:
@@ -124,7 +118,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/UpdateBookAuthor'
+                $ref: "#/components/schemas/UpdateBookAuthor"
       responses:
         200:
           description: Updating books successfully
@@ -133,7 +127,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UpdateBookAuthor'
+                  $ref: "#/components/schemas/UpdateBookAuthor"
   /authors:
     get:
       tags:
@@ -149,18 +143,12 @@ paths:
           schema:
             type: string
           required: false
-        - name: page
-          in: query
-          description: page number
-          required: false
-          schema:
-            type: integer
-            default: 1
+        - $ref: "#/components/parameters/queryPagination"
         - name: pageSize
           in: query
           description: number of page in the book
           required: false
-          schema: 
+          schema:
             type: integer
             default: 50
       responses:
@@ -171,7 +159,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Author'
+                  $ref: "#/components/schemas/Author"
     put:
       summary: Create or update authors
       operationId: crupdateAuthors
@@ -183,7 +171,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Author'
+                $ref: "#/components/schemas/Author"
       responses:
         200:
           description: The list of created or updated authors
@@ -192,7 +180,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Author'
+                  $ref: "#/components/schemas/Author"
   /authors/{aId}:
     delete:
       summary: Delete an author
@@ -212,9 +200,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Author'
+                $ref: "#/components/schemas/Author"
 
-  
 components:
   schemas:
     Book:
@@ -225,7 +212,7 @@ components:
         bookName:
           type: string
         author:
-          $ref: '#/components/schemas/Author'
+          $ref: "#/components/schemas/Author"
         pageNumbers:
           type: integer
         topic:
@@ -239,7 +226,7 @@ components:
           format: date
     CrupdateBooks:
       allOf:
-        - $ref: '#/components/schemas/Book'
+        - $ref: "#/components/schemas/Book"
         - type: object
         - required:
             - id
@@ -252,7 +239,7 @@ components:
       properties:
         bookId:
           type: string
-        authorId: 
+        authorId:
           type: string
     Author:
       type: object
@@ -262,9 +249,26 @@ components:
         authorName:
           type: string
         sex:
-          $ref: '#/components/schemas/Sex'
+          $ref: "#/components/schemas/Sex"
     Sex:
       type: string
       enum:
         - M
         - F
+  parameters:
+    queryPagination:
+      name: page
+      in: query
+      description: Page number for pagination
+      required: false
+      schema:
+        type: integer
+        default: 1
+    pathPagination:
+      name: page
+      in: path
+      description: Page number for pagination
+      required: true
+      schema:
+        type: integer
+        default: 1
