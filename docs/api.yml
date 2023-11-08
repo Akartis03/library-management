@@ -139,6 +139,8 @@ paths:
 
   /books/{booId}/authors/{authorId}:
     put:
+      tags:
+        - Books
       summary: Modify the author of book
       parameters:
         - name: bookId
@@ -162,6 +164,28 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CrupdateBooks'
+  /books/authors:
+    put:
+      tags:
+        - Books
+      summary: Update author of more books
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdateBookAuthor'
+      responses:
+        200:
+          description: Updating books successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UpdateBookAuthor'
 components:
   schemas:
     Book:
