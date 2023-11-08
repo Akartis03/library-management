@@ -41,6 +41,20 @@ paths:
             type: string
             format: date
           required: false
+        - in: query
+          name: page
+          description: page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: pageSize
+          description: number of page in the book
+          required: false
+          schema: 
+            type: integer
+            default: 50
       responses:
         200:
           description: The list of filtered books
@@ -71,6 +85,55 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Book'
+  /books/{booId}/authors/{authorId}:
+    put:
+      tags:
+        - Books
+      summary: Modify the author of book
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The book id to be modified
+        - name: authorId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The id for the new book
+      responses:
+        200:
+          description: Opération successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CrupdateBooks'
+  /books/authors:
+    put:
+      tags:
+        - Books
+      summary: Update author of more books
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdateBookAuthor'
+      responses:
+        200:
+          description: Updating books successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UpdateBookAuthor'
   /authors:
     get:
       tags:
@@ -137,55 +200,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Author'
 
-  /books/{booId}/authors/{authorId}:
-    put:
-      tags:
-        - Books
-      summary: Modify the author of book
-      parameters:
-        - name: bookId
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The book id to be modified
-        - name: authorId
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The id for the new book
-      responses:
-        200:
-          description: Opération successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CrupdateBooks'
-  /books/authors:
-    put:
-      tags:
-        - Books
-      summary: Update author of more books
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/UpdateBookAuthor'
-      responses:
-        200:
-          description: Updating books successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UpdateBookAuthor'
+  
 components:
   schemas:
     Book:
